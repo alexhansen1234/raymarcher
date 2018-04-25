@@ -16,7 +16,7 @@
 #define AA 1
 #define HEATMAP 0
 
-vec3 light = {0, 0, -200};
+vec3 light = {-200, -200, -200};
 //vec3 light = {-200, 200, -200};
 
 // Build scene here
@@ -100,7 +100,7 @@ vec4 render(camera cam, vec4 screen_pos)
 
   dir = normalize3(sub3(dir, pos));
 
-  float dist = raymarch(pos, dir, &color, 0.0, 200.0, RAYMARCH_ITER, 0.0001);
+  float dist = raymarch(pos, dir, &color, 0.0, 200.0, RAYMARCH_ITER, 0.0001/(10.0 * SCALE));
   if(dist > 0.0)
   {
     #if HEATMAP
@@ -133,8 +133,8 @@ int main(int argc, char ** argv)
 
 
   cam = rotate4yM(cam, 45);
+  cam = rotate4xM(cam, -45);
   cam = rotate4zM(cam, 45);
-  //cam = rotate4zM(cam, 45);
 
   uint32_t * image = (uint32_t *)malloc(sizeof(uint32_t) * HEIGHT * WIDTH);
 

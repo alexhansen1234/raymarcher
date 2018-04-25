@@ -106,7 +106,7 @@ vec4 sphereFold(vec4 z)
 
 #define MR2 1.0
 #define ITERATIONS 10
-#define MBSCALE -2.0
+#define MBSCALE -2.5
 
 float mandelbox(vec3 z, vec4 * color)
 {

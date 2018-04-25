@@ -1,11 +1,17 @@
-BINARY = mandelbox
-OBJ := $(patsubst %.c,%.o,$(wildcard src/*.c))
+BINARY := mandelbox
+SRC_DIR := ./src
+OBJ := $(patsubst %.c,%.o,$(wildcard $(SRC_DIR)/*.c))
+SRC := $(wildcard src/*.c)
 
-CC = gcc
-FLAGS = -Wall -O3
+
+CC := gcc
+FLAGS := -O3 -Wall
 
 $(BINARY): $(OBJ)
 	$(CC) $(FLAGS) -o $(BINARY) $(OBJ)
+
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(FLAGS) -c -o $@ $<
 
 clean:
 	rm $(BINARY) $(OBJ)
