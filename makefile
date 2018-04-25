@@ -16,7 +16,7 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 clean:
 	rm $(BINARY) $(OBJ)
 
-deploy:
+push:
 	git add .
 	git commit -m "update"
 	git push https://github.com/alexhansen1234/raymarcher.git master
