@@ -8,13 +8,15 @@ CC := gcc
 FLAGS := -O3 -Wall
 
 $(BINARY): $(OBJ)
-	$(CC) $(FLAGS) -o $(BINARY) $(OBJ)
+	@echo Linking $(BINARY)
+	@$(CC) $(FLAGS) -o $(BINARY) $(OBJ)
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(FLAGS) -c -o $@ $<
+	@echo Compiling $@
+	@$(CC) $(FLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(BINARY) $(OBJ)
+	@rm -f $(BINARY) $(OBJ)
 
 push:
 	make clean
