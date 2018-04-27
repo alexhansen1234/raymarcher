@@ -14,7 +14,7 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(FLAGS) -c -o $@ $<
 
 clean:
-	rm $(BINARY) $(OBJ)
+	rm -f $(BINARY) $(OBJ)
 
 push:
 	make clean
