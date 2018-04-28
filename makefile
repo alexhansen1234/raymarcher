@@ -20,8 +20,11 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(CC) $(FLAGS) -c -o $@ $<
 
 clean:
-	@echo Removing $(BUILD_DIR)
-	@rm -rf $(BUILD_DIR)
+	@if [ -d bin ]; then\
+		echo Removing $(BUILD_DIR);\
+		rm -rf $(BUILD_DIR);\
+	fi
+
 
 cleaner:
 	@make clean
