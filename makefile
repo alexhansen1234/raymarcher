@@ -8,7 +8,7 @@ CC := gcc
 FLAGS := -O3 -Wall
 
 $(BINARY): $(BUILD_DIR) $(OBJ)
-	@echo Linking $(BINARY)
+	@echo Linking Target $(BINARY)
 	@$(CC) $(FLAGS) -o $(BINARY) $(OBJ)
 
 $(BUILD_DIR):
