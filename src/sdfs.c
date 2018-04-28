@@ -129,3 +129,50 @@ float mandelbox(vec3 z, vec4 * color)
   }
   return 0.25*sqrt(w2)/fabs(w.w);
 }
+
+#define POWER_MBULB 8
+#define ITER_MBULB 4
+#define FLOAT(x) ((float)x)
+
+float mandelbulb(vec3 c, vec4 * color)
+{
+  vec3 w = c;
+  int iter = 0;
+  float dr = 1.0;
+  float m = dot3(w,w);
+
+  for(; iter < ITER_MBULB; iter++)
+  {
+#if POWER_MBULB == 8
+    float m2 = m*m;
+    float m4 = m2*m2;
+    dr = 8.0 * sqrt(m4 * m2 * m) * dr + 1.0;
+
+    float x = w.x; float x2 = x*x; float x4 = x2*x2;
+    float y = w.y; float y2 = y*y; float y4 = y2*y2;
+    float z = w.z; float z2 = z*z; float z4 = z2*z2;
+
+    float k3 = x2 + z2;
+    float k2 = 1.0 / sqrt( k3*k3*k3*k3*k3*k3*k3 );
+    float k1 = x4 + y4 + z4 - 6.0*y2*z2 - 6.0*x2*y2 + 2.0*z2*x2;
+    float k4 = x2 - y2 + z2;
+
+    w.x =  c.x + 64.0*x*y*z*(x2-z2)*k4*(x4-6.0*x2*z2+z4)*k1*k2;
+    w.y =  c.y + -16.0*y2*k3*k4*k4 + k1*k1;
+    w.z =  c.z + -8.0*y*k4*(x4*x4 - 28.0*x4*x2*z2 + 70.0*x4*z4 - 28.0*x2*z2*z4 + z4*z4)*k1*k2;
+#else
+    dr = FLOAT(POWER_MBULB) * pow(r, FLOAT(POWER_MBULB) - 1.0) * dr + 1.0;
+    r = length3(w);
+    float theta = acos(w.z / r) * POWER_MBULB;
+    float phi   = atan2(w.y, w.x) * POWER_MBULB;
+    w = add3(scale3(pow(r, FLOAT(POWER_MBULB)),get_vec3(cos(phi)*sin(theta), sin(phi)*sin(theta), cos(theta))), c);
+
+    r = length3(w);
+#endif
+    m = dot3(w, w);
+    if(m > 256.0)
+      break;
+  }
+//   return 0.5 * log(r) * r / dr;
+  return 0.25 * log(m) * sqrt(m) / dr;
+}

@@ -9,4 +9,5 @@ extern float ticosahedral(vec3 p, float e, float r);
 extern vec4 boxFold(vec4 z);
 extern vec4 sphereFold(vec4 z);
 extern float mandelbox(vec3 z, vec4 * color);
+extern float mandelbulb(vec3 z, vec4 * color);
 #endif
