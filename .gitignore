@@ -2,7 +2,7 @@
 build/*
 
 # Include files
-build/.gitkeep
+!build/.gitkeep
 
 
 
