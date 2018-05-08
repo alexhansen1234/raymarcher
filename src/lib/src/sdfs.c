@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "../include/vector.h"
 
 vec3 n1 = {1.000,0.000,0.000};

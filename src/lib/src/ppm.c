@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 void write_ppm1(const char * file_name, uint32_t width, uint32_t height, uint32_t image[width][height])
 {
