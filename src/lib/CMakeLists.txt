@@ -9,3 +9,9 @@ add_library(Raymarcher
 target_include_directories(Raymarcher PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	)
+
+target_compile_options(Raymarcher
+	PUBLIC
+	-Wall
+	-O3
+	)
