@@ -1,13 +1,21 @@
 # Raymarcher
 
-Build with commands
+Clone repo
+
+		git clone https://github.com/alexhansen1234/raymarcher.git
+
+Build
 	
 		cd build
 		cmake ..
 		make
 
-Run Target Binary with commands
+Run
 
 		./raymarcher
 
-Output is a PPM format image, which can be opened in any decent preview software.
+Output
+
+		mandelbox.ppm
+
+which can be opened in any decent preview software.
