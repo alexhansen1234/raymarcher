@@ -1,13 +1,15 @@
 Start of a raymarcher
 
 Build with commands
-	cd src
-	cmake .
-	make
+	
+		cd src
+		cmake .
+		make
 
 Run Target Binar with commands
-	cd ../build
-	./raymarcher
+	
+		cd ../build
+		./raymarcher
 
 Output is a PPM format image, which can be opened in any decent preview software.
 
