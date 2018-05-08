@@ -6,7 +6,7 @@ Build with commands
 		cmake .
 		make
 
-Run Target Binar with commands
+Run Target Binary with commands
 	
 		cd ../build
 		./raymarcher
@@ -14,4 +14,4 @@ Run Target Binar with commands
 Output is a PPM format image, which can be opened in any decent preview software.
 
 To-do:
-Out-of-source Builds to keep CMake build files under control, and out of source repo.
+Out-of-source build to keep CMake build files under control, and out of source repo.
