@@ -15,6 +15,7 @@ add_executable(raymarcher src/app/main.c)
 target_link_libraries(raymarcher
 	Raymarcher
 	m
+	pthread
 	)
 
 target_compile_options(raymarcher

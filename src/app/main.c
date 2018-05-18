@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <pthread.h>
+#include <unistd.h>
 
 #include "../include/camera.h"
 #include "../include/matrix.h"
@@ -16,8 +18,77 @@
 #define AA 1
 #define HEATMAP 0
 
+vec4 render(camera cam, vec4 screen_pos);
+
+uint32_t * image;
+uint32_t y = 0;
+uint32_t x = 0;
+pthread_mutex_t lock;
 vec3 light = {-200, -200, -200};
 //vec3 light = {-200, 200, -200};
+
+void * render_thread(void * args)
+{
+	printf("in thread\n");
+	camera * cam = (camera *)args;
+	uint32_t this_y, this_x;
+	vec4 pixel_color;
+	while(1)
+	{
+		// lock x and y
+		pthread_mutex_lock(&lock);
+		this_y = y;
+		this_x = x;
+
+		if(this_y < HEIGHT)
+		{
+			//printf("this_y = %d\nthis_x = %d\n", this_y, this_x);
+			if(x++ == WIDTH)
+			{
+				x = 0;
+				y++;
+			}
+			// unlock x and y
+			pthread_mutex_unlock(&lock);
+			// render pixel
+			pixel_color = get_vec4(0, 0, 0, 0);
+
+      vec4 screen_pos = get_vec4(
+                                (-1.0 + 2.0 * x / WIDTH)/SCALE,   // X position on screen, -1.0 <= pixel-x < 1.0
+                                (-1.0 + 2.0 * y / HEIGHT)/SCALE,  // Y position on screen, -1.0 <= pixel-y < 1.0
+                                0,                        // Screen is 2D, so no z component
+                                1.0                 // This term will scale the components, but keep the translations regular
+      );
+
+      for(int aa=0; aa < AA*AA; aa++)
+      {
+        screen_pos.x = screen_pos.x + (float)rand()/((float)RAND_MAX)/(100.0*WIDTH*SCALE);
+        screen_pos.y = screen_pos.y + (float)rand()/((float)RAND_MAX)/(100.0*HEIGHT*SCALE);
+
+        #if HEATMAP
+        pixel_color = render(*cam, screen_pos);
+        if(pixel_color.x > 1.0)
+        {
+          pixel_color = color_ramp((int)pixel_color.x, RAYMARCH_ITER);
+        }
+        #else
+        pixel_color = add4(pixel_color, render(*cam, screen_pos));
+        #endif
+
+      }
+      #if !HEATMAP
+      pixel_color = scale4(1.0 / (AA*AA), pixel_color);
+      #endif
+      *(image + this_y*WIDTH + this_x) = make_rgb(pixel_color);
+		}
+		else
+		{
+			pthread_mutex_unlock(&lock);
+			break;
+		}
+	}
+	return NULL;
+}
 
 // Build scene here
 float distance_field(vec3 p)
@@ -121,6 +192,8 @@ vec4 render(camera cam, vec4 screen_pos)
 
 int main(int argc, char ** argv)
 {
+	const int n_proc = sysconf(_SC_NPROCESSORS_ONLN);
+	pthread_t threads[n_proc];
   vec4 right = get_vec4(1.0, 0, 0, 0);
   vec4 up = get_vec4(0, 1.0, 0, 0);
   vec4 eye = get_vec4(0, 0, -10, 0);
@@ -136,8 +209,38 @@ int main(int argc, char ** argv)
   cam = rotate4xM(cam, -45);
   cam = rotate4zM(cam, 45);
 
-  uint32_t * image = (uint32_t *)malloc(sizeof(uint32_t) * HEIGHT * WIDTH);
+  image = (uint32_t *)malloc(sizeof(uint32_t) * HEIGHT * WIDTH);
+	int i=0;
 
+	if(pthread_mutex_init(&lock, NULL) != 0)
+	{
+		perror("pthread_mutex_init");
+		exit(1);
+	}
+
+	while(i < n_proc)
+	{
+		printf("spawning thread %d\n", i);
+		if(pthread_create( threads + i, NULL, render_thread, (void *)&cam))
+		{
+			perror("pthread_create");
+			exit(1);
+		}
+		i++;
+	}
+
+	i=0;
+
+	while(i < n_proc)
+	{
+		if(pthread_join(*(threads+i), NULL))
+		{
+			perror("pthread_join");
+			exit(1);
+		}
+		i++;
+	}
+/*
   for(int y=0; y < HEIGHT; y++)
   {
     for(int x=0; x < WIDTH; x++)
@@ -173,7 +276,7 @@ int main(int argc, char ** argv)
       *(image + y*WIDTH + x) = make_rgb(pixel_color);
     }
   }
-
+*/
   write_ppm("mandelbox.ppm", WIDTH, HEIGHT, image);
 
   free(image);
