@@ -29,7 +29,6 @@ vec3 light = {-200, -200, -200};
 
 void * render_thread(void * args)
 {
-	printf("in thread\n");
 	camera * cam = (camera *)args;
 	uint32_t this_y, this_x;
 	vec4 pixel_color;
@@ -220,7 +219,6 @@ int main(int argc, char ** argv)
 
 	while(i < n_proc)
 	{
-		printf("spawning thread %d\n", i);
 		if(pthread_create( threads + i, NULL, render_thread, (void *)&cam))
 		{
 			perror("pthread_create");
