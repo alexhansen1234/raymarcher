@@ -11,8 +11,8 @@
 #include "../include/sdfs.h"
 #include "../include/ppm.h"
 
-#define WIDTH 500
-#define HEIGHT 500
+#define WIDTH 2000
+#define HEIGHT 2000
 #define SCALE 0.333
 #define RAYMARCH_ITER 320
 #define AA 1
@@ -197,7 +197,6 @@ int main(int argc, char ** argv)
   vec4 up = get_vec4(0, 1.0, 0, 0);
   vec4 eye = get_vec4(0, 0, -10, 0);
   vec4 translate = get_vec4(0, 0, -20, 0.0);
-  vec4 pixel_color;
   camera cam = get_mat4(right,
                         up,
                         eye,
