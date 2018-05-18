@@ -5,7 +5,7 @@ Clone repo
 		git clone https://github.com/alexhansen1234/raymarcher.git
 
 Build
-	
+		cd raymarcher	
 		cd build
 		cmake ..
 		make
